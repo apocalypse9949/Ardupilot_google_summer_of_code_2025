@@ -12,7 +12,7 @@ import tensorflow as tf
 # ==============================
 # AI-POWERED UAV ANOMALY DETECTION SYSTEM
 # ==============================
-MODEL_TYPE = "pytorch"  # Change to 'tensorflow' if using TensorFlow
+MODEL_TYPE = "pytorch"  
 MODEL_PATH = "uav_anomaly_detector.pth" if MODEL_TYPE == "pytorch" else "uav_anomaly_detector.h5"
 ONNX_PATH = "uav_optimized_model.onnx"
 TRT_ENGINE_PATH = "uav_optimized_model.trt"
@@ -21,7 +21,7 @@ TRT_ENGINE_PATH = "uav_optimized_model.trt"
 USE_CUDA = torch.cuda.is_available()
 DEVICE = "cuda" if USE_CUDA else "cpu"
 
-# Logging setup
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # ==============================
@@ -105,7 +105,7 @@ def run_tensorrt(telemetry_data):
         def infer():
             input_data = np.array([telemetry_data], dtype=np.float32)
             start_time = time.time()
-            time.sleep(0.01)  # Mock inference time
+            time.sleep(0.01)  
             end_time = time.time()
             logging.info(f" TensorRT Inference Time: {end_time - start_time:.4f} sec")
         
