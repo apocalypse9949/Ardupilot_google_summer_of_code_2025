@@ -25,7 +25,7 @@ DEVICE = "cuda" if USE_CUDA else "cpu"
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # ==============================
-# 1️ Convert Model to ONNX
+#  Convert Model to ONNX
 # ==============================
 def convert_to_onnx():
     if os.path.exists(ONNX_PATH):
