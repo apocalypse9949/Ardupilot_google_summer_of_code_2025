@@ -32,7 +32,7 @@ def convert_to_onnx():
         logging.info(f" ONNX model already exists: {ONNX_PATH}")
         return
 
-    logging.info(f"🔄 Converting {MODEL_TYPE} model to ONNX...")
+    logging.info(f" Converting {MODEL_TYPE} model to ONNX...")
     try:
         if MODEL_TYPE == "tensorflow":
             import tf2onnx
@@ -81,11 +81,11 @@ def optimize_tensorrt():
         logging.info(f" TensorRT model already optimized: {TRT_ENGINE_PATH}")
         return
 
-    logging.info("🔄 Optimizing ONNX model with TensorRT...")
+    logging.info(" Optimizing ONNX model with TensorRT...")
     try:
         cmd = f"/usr/src/tensorrt/bin/trtexec --onnx={ONNX_PATH} --saveEngine={TRT_ENGINE_PATH} --best"
         os.system(cmd)
-        logging.info(f"✅ TensorRT optimization complete: {TRT_ENGINE_PATH}")
+        logging.info(f" TensorRT optimization complete: {TRT_ENGINE_PATH}")
     except Exception as e:
         logging.error(f" TensorRT Optimization Failed: {str(e)}")
 
