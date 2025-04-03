@@ -10,7 +10,7 @@ import threading
 import tensorflow as tf
 
 # ==============================
-# 🔥 AI-POWERED UAV ANOMALY DETECTION SYSTEM
+# AI-POWERED UAV ANOMALY DETECTION SYSTEM
 # ==============================
 MODEL_TYPE = "pytorch"  # Change to 'tensorflow' if using TensorFlow
 MODEL_PATH = "uav_anomaly_detector.pth" if MODEL_TYPE == "pytorch" else "uav_anomaly_detector.h5"
@@ -25,11 +25,11 @@ DEVICE = "cuda" if USE_CUDA else "cpu"
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # ==============================
-# 1️⃣ Convert Model to ONNX
+# 1️ Convert Model to ONNX
 # ==============================
 def convert_to_onnx():
     if os.path.exists(ONNX_PATH):
-        logging.info(f"✅ ONNX model already exists: {ONNX_PATH}")
+        logging.info(f" ONNX model already exists: {ONNX_PATH}")
         return
 
     logging.info(f"🔄 Converting {MODEL_TYPE} model to ONNX...")
@@ -43,15 +43,15 @@ def convert_to_onnx():
             model.eval()
             dummy_input = torch.randn(1, *model.input_shape[1:]).to(DEVICE)
             torch.onnx.export(model, dummy_input, ONNX_PATH, export_params=True)
-        logging.info(f"✅ Successfully converted {MODEL_TYPE} model to ONNX: {ONNX_PATH}")
+        logging.info(f" Successfully converted {MODEL_TYPE} model to ONNX: {ONNX_PATH}")
     except Exception as e:
-        logging.error(f"❌ Failed to convert to ONNX: {str(e)}")
+        logging.error(f" Failed to convert to ONNX: {str(e)}")
 
 # ==============================
-# 2️⃣ Run ONNX Model with Telemetry Data
+#  Run ONNX Model with Telemetry Data
 # ==============================
 def run_onnx(telemetry_data):
-    logging.info("🔄 Running ONNX-based UAV anomaly detection...")
+    logging.info(" Running ONNX-based UAV anomaly detection...")
     try:
         session = ort.InferenceSession(
             ONNX_PATH, providers=["CUDAExecutionProvider"] if USE_CUDA else ["CPUExecutionProvider"]
@@ -65,20 +65,20 @@ def run_onnx(telemetry_data):
         end_time = time.time()
         
         anomaly_score = output[0][0]
-        logging.info(f"✅ ONNX Inference Time: {end_time - start_time:.4f} sec")
-        logging.info(f"🔍 Anomaly Score: {anomaly_score}")
+        logging.info(f" ONNX Inference Time: {end_time - start_time:.4f} sec")
+        logging.info(f" Anomaly Score: {anomaly_score}")
 
         if anomaly_score > 0.8:
-            logging.warning("⚠️ HIGH RISK: Activating Failsafe (Return-to-Home or Emergency Landing)")
+            logging.warning("⚠ HIGH RISK: Activating Failsafe (Return-to-Home or Emergency Landing)")
     except Exception as e:
-        logging.error(f"❌ ONNX Runtime failed: {str(e)}")
+        logging.error(f" ONNX Runtime failed: {str(e)}")
 
 # ==============================
-# 3️⃣ Optimize with TensorRT
+#  Optimize with TensorRT
 # ==============================
 def optimize_tensorrt():
     if os.path.exists(TRT_ENGINE_PATH):
-        logging.info(f"✅ TensorRT model already optimized: {TRT_ENGINE_PATH}")
+        logging.info(f" TensorRT model already optimized: {TRT_ENGINE_PATH}")
         return
 
     logging.info("🔄 Optimizing ONNX model with TensorRT...")
@@ -87,27 +87,27 @@ def optimize_tensorrt():
         os.system(cmd)
         logging.info(f"✅ TensorRT optimization complete: {TRT_ENGINE_PATH}")
     except Exception as e:
-        logging.error(f"❌ TensorRT Optimization Failed: {str(e)}")
+        logging.error(f" TensorRT Optimization Failed: {str(e)}")
 
 # ==============================
-# 4️⃣ Run TensorRT Model with Multi-threading
+#  Run TensorRT Model with Multi-threading
 # ==============================
 def run_tensorrt(telemetry_data):
-    logging.info("🔄 Running TensorRT optimized UAV anomaly detection...")
+    logging.info(" Running TensorRT optimized UAV anomaly detection...")
     try:
         TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
         with open(TRT_ENGINE_PATH, "rb") as f:
             runtime = trt.Runtime(TRT_LOGGER)
             engine = runtime.deserialize_cuda_engine(f.read())
 
-        logging.info("✅ TensorRT model loaded successfully! 🚀")
+        logging.info(" TensorRT model loaded successfully! 🚀")
 
         def infer():
             input_data = np.array([telemetry_data], dtype=np.float32)
             start_time = time.time()
             time.sleep(0.01)  # Mock inference time
             end_time = time.time()
-            logging.info(f"✅ TensorRT Inference Time: {end_time - start_time:.4f} sec")
+            logging.info(f" TensorRT Inference Time: {end_time - start_time:.4f} sec")
         
         threads = [threading.Thread(target=infer) for _ in range(4)]  # Run 4 parallel inferences
         for t in threads:
@@ -115,7 +115,7 @@ def run_tensorrt(telemetry_data):
         for t in threads:
             t.join()
     except Exception as e:
-        logging.error(f"❌ TensorRT Inference Failed: {str(e)}")
+        logging.error(f" TensorRT Inference Failed: {str(e)}")
 
 # ==============================
 # 🏁 ENTRY POINT: UAV Monitoring System
