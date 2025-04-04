@@ -125,7 +125,7 @@ def run_tensorrt():
         logging.error(f" TensorRT Inference Failed: {str(e)}")
 
 # ==============================
-# 🏁 ENTRY POINT: Run All Steps
+#    ENTRY POINT: Run All Steps
 # ==============================
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI Model Optimization & Inference")
