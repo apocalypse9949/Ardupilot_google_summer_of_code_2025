@@ -10,9 +10,9 @@ import threading
 import tensorflow as tf
 
 # ==============================
-# 🔥 CONFIGURATION SETTINGS
+# CONFIGURATION SETTINGS
 # ==============================
-MODEL_TYPE = "pytorch"  # Change to 'tensorflow' if using TensorFlow
+MODEL_TYPE = "pytorch"  
 MODEL_PATH = "anomaly_detector.pth" if MODEL_TYPE == "pytorch" else "anomaly_detector.h5"
 ONNX_PATH = "optimized_model.onnx"
 TRT_ENGINE_PATH = "optimized_model.trt"
@@ -25,14 +25,14 @@ DEVICE = "cuda" if USE_CUDA else "cpu"
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # ==============================
-# 1️⃣ Convert PyTorch/TensorFlow to ONNX
+#  Convert PyTorch/TensorFlow to ONNX
 # ==============================
 def convert_to_onnx():
     if os.path.exists(ONNX_PATH):
-        logging.info(f"✅ ONNX model already exists: {ONNX_PATH}")
+        logging.info(f" ONNX model already exists: {ONNX_PATH}")
         return
 
-    logging.info(f"🔄 Converting {MODEL_TYPE} model to ONNX...")
+    logging.info(f"Converting {MODEL_TYPE} model to ONNX...")
 
     try:
         if MODEL_TYPE == "tensorflow":
@@ -45,15 +45,15 @@ def convert_to_onnx():
             dummy_input = torch.randn(1, *model.input_shape[1:]).to(DEVICE)
             torch.onnx.export(model, dummy_input, ONNX_PATH, export_params=True)
 
-        logging.info(f"✅ Successfully converted {MODEL_TYPE} model to ONNX: {ONNX_PATH}")
+        logging.info(f" Successfully converted {MODEL_TYPE} model to ONNX: {ONNX_PATH}")
     except Exception as e:
-        logging.error(f"❌ Failed to convert to ONNX: {str(e)}")
+        logging.error(f" Failed to convert to ONNX: {str(e)}")
 
 # ==============================
-# 2️⃣ Run ONNX Model with ONNX Runtime (Optimized)
+#     Run ONNX Model with ONNX Runtime (Optimized)
 # ==============================
 def run_onnx(batch_size=1):
-    logging.info(f"🔄 Running ONNX model inference with batch size {batch_size}...")
+    logging.info(f" Running ONNX model inference with batch size {batch_size}...")
 
     try:
         session = ort.InferenceSession(
@@ -69,33 +69,33 @@ def run_onnx(batch_size=1):
         output = session.run([output_name], {input_name: input_data})
         end_time = time.time()
 
-        logging.info(f"✅ ONNX Inference Time: {end_time - start_time:.4f} sec")
-        logging.info(f"🔍 Anomaly Score: {output}")
+        logging.info(f" ONNX Inference Time: {end_time - start_time:.4f} sec")
+        logging.info(f" Anomaly Score: {output}")
     except Exception as e:
-        logging.error(f"❌ ONNX Runtime failed: {str(e)}")
+        logging.error(f" ONNX Runtime failed: {str(e)}")
 
 # ==============================
-# 3️⃣ Optimize Model with TensorRT
+#     Optimize Model with TensorRT
 # ==============================
 def optimize_tensorrt():
     if os.path.exists(TRT_ENGINE_PATH):
-        logging.info(f"✅ TensorRT model already optimized: {TRT_ENGINE_PATH}")
+        logging.info(f" TensorRT model already optimized: {TRT_ENGINE_PATH}")
         return
 
-    logging.info(f"🔄 Optimizing ONNX model with TensorRT...")
+    logging.info(f" Optimizing ONNX model with TensorRT...")
 
     try:
         cmd = f"/usr/src/tensorrt/bin/trtexec --onnx={ONNX_PATH} --saveEngine={TRT_ENGINE_PATH} --best"
         os.system(cmd)
-        logging.info(f"✅ TensorRT optimization complete: {TRT_ENGINE_PATH}")
+        logging.info(f" TensorRT optimization complete: {TRT_ENGINE_PATH}")
     except Exception as e:
-        logging.error(f"❌ TensorRT Optimization Failed: {str(e)}")
+        logging.error(f" TensorRT Optimization Failed: {str(e)}")
 
 # ==============================
-# 4️⃣ Run Optimized TensorRT Model (Multi-threaded)
+#     Run Optimized TensorRT Model (Multi-threaded)
 # ==============================
 def run_tensorrt():
-    logging.info("🔄 Running TensorRT optimized inference...")
+    logging.info(" Running TensorRT optimized inference...")
 
     try:
         TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
@@ -103,7 +103,7 @@ def run_tensorrt():
             runtime = trt.Runtime(TRT_LOGGER)
             engine = runtime.deserialize_cuda_engine(f.read())
 
-        logging.info("✅ TensorRT model loaded successfully! 🚀")
+        logging.info(" TensorRT model loaded successfully! 🚀")
 
         def infer():
             input_shape = (1, 10)  # Adjust based on model input
@@ -114,7 +114,7 @@ def run_tensorrt():
             time.sleep(0.01)  # Mock inference time
             end_time = time.time()
 
-            logging.info(f"✅ TensorRT Inference Time: {end_time - start_time:.4f} sec")
+            logging.info(f" TensorRT Inference Time: {end_time - start_time:.4f} sec")
 
         threads = [threading.Thread(target=infer) for _ in range(4)]  # Run 4 parallel inferences
         for t in threads:
@@ -122,7 +122,7 @@ def run_tensorrt():
         for t in threads:
             t.join()
     except Exception as e:
-        logging.error(f"❌ TensorRT Inference Failed: {str(e)}")
+        logging.error(f" TensorRT Inference Failed: {str(e)}")
 
 # ==============================
 # 🏁 ENTRY POINT: Run All Steps
