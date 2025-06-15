@@ -9,9 +9,9 @@ import argparse
 import threading
 import tensorflow as tf
 
-# ==============================
+
 # CONFIGURATION SETTINGS
-# ==============================
+
 MODEL_TYPE = "pytorch"  
 MODEL_PATH = "anomaly_detector.pth" if MODEL_TYPE == "pytorch" else "anomaly_detector.h5"
 ONNX_PATH = "optimized_model.onnx"
@@ -24,9 +24,9 @@ DEVICE = "cuda" if USE_CUDA else "cpu"
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# ==============================
+
 #  Convert PyTorch/TensorFlow to ONNX
-# ==============================
+
 def convert_to_onnx():
     if os.path.exists(ONNX_PATH):
         logging.info(f" ONNX model already exists: {ONNX_PATH}")
@@ -49,9 +49,8 @@ def convert_to_onnx():
     except Exception as e:
         logging.error(f" Failed to convert to ONNX: {str(e)}")
 
-# ==============================
+
 #     Run ONNX Model with ONNX Runtime (Optimized)
-# ==============================
 def run_onnx(batch_size=1):
     logging.info(f" Running ONNX model inference with batch size {batch_size}...")
 
@@ -74,9 +73,8 @@ def run_onnx(batch_size=1):
     except Exception as e:
         logging.error(f" ONNX Runtime failed: {str(e)}")
 
-# ==============================
+
 #     Optimize Model with TensorRT
-# ==============================
 def optimize_tensorrt():
     if os.path.exists(TRT_ENGINE_PATH):
         logging.info(f" TensorRT model already optimized: {TRT_ENGINE_PATH}")
@@ -91,9 +89,8 @@ def optimize_tensorrt():
     except Exception as e:
         logging.error(f" TensorRT Optimization Failed: {str(e)}")
 
-# ==============================
+
 #     Run Optimized TensorRT Model (Multi-threaded)
-# ==============================
 def run_tensorrt():
     logging.info(" Running TensorRT optimized inference...")
 
@@ -124,9 +121,8 @@ def run_tensorrt():
     except Exception as e:
         logging.error(f" TensorRT Inference Failed: {str(e)}")
 
-# ==============================
+
 #    ENTRY POINT: Run All Steps
-# ==============================
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI Model Optimization & Inference")
     parser.add_argument("--convert", action="store_true", help="Convert model to ONNX")
