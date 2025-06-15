@@ -9,9 +9,9 @@ import argparse
 import threading
 import tensorflow as tf
 
-# ==============================
+
 # AI-POWERED UAV ANOMALY DETECTION SYSTEM
-# ==============================
+
 MODEL_TYPE = "pytorch"  
 MODEL_PATH = "uav_anomaly_detector.pth" if MODEL_TYPE == "pytorch" else "uav_anomaly_detector.h5"
 ONNX_PATH = "uav_optimized_model.onnx"
@@ -24,9 +24,9 @@ DEVICE = "cuda" if USE_CUDA else "cpu"
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# ==============================
+
 #  Convert Model to ONNX
-# ==============================
+
 def convert_to_onnx():
     if os.path.exists(ONNX_PATH):
         logging.info(f" ONNX model already exists: {ONNX_PATH}")
@@ -47,9 +47,8 @@ def convert_to_onnx():
     except Exception as e:
         logging.error(f" Failed to convert to ONNX: {str(e)}")
 
-# ==============================
+
 #  Run ONNX Model with Telemetry Data
-# ==============================
 def run_onnx(telemetry_data):
     logging.info(" Running ONNX-based UAV anomaly detection...")
     try:
@@ -73,9 +72,8 @@ def run_onnx(telemetry_data):
     except Exception as e:
         logging.error(f" ONNX Runtime failed: {str(e)}")
 
-# ==============================
+
 #  Optimize with TensorRT
-# ==============================
 def optimize_tensorrt():
     if os.path.exists(TRT_ENGINE_PATH):
         logging.info(f" TensorRT model already optimized: {TRT_ENGINE_PATH}")
@@ -89,9 +87,11 @@ def optimize_tensorrt():
     except Exception as e:
         logging.error(f" TensorRT Optimization Failed: {str(e)}")
 
-# ==============================
-#  Run TensorRT Model with Multi-threading
-# ==============================
+
+#  Run TensorRT Model with Multi-threading for parallel computing
+#if not use single thread for low resource comsuption
+
+
 def run_tensorrt(telemetry_data):
     logging.info(" Running TensorRT optimized UAV anomaly detection...")
     try:
@@ -117,9 +117,8 @@ def run_tensorrt(telemetry_data):
     except Exception as e:
         logging.error(f" TensorRT Inference Failed: {str(e)}")
 
-# ==============================
-# 🏁 ENTRY POINT: UAV Monitoring System
-# ==============================
+#  ENTRY POINTs in here
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI UAV Anomaly Detection & Failsafe System")
     parser.add_argument("--convert", action="store_true", help="Convert model to ONNX")
@@ -129,7 +128,7 @@ if __name__ == "__main__":
     parser.add_argument("--telemetry", nargs='+', type=float, help="Telemetry data input")
 
     args = parser.parse_args()
-    telemetry_data = args.telemetry or [0.5] * 10  # Default telemetry values
+    telemetry_data = args.telemetry or [0.5] * 10  # these default but you can change the val 
 
     if args.convert:
         convert_to_onnx()
