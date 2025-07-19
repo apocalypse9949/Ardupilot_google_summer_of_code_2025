@@ -100,7 +100,7 @@ def run_tensorrt(telemetry_data):
             runtime = trt.Runtime(TRT_LOGGER)
             engine = runtime.deserialize_cuda_engine(f.read())
 
-        logging.info(" TensorRT model loaded successfully! 🚀")
+        logging.info(" TensorRT model loaded successfully!")
 
         def infer():
             input_data = np.array([telemetry_data], dtype=np.float32)
